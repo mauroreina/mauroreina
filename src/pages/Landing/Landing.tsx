@@ -1,21 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider, PaletteMode } from '@mui/material/styles';
-import AppAppBar from '../../components/AppAppBar';
-import MainContent from '../../components/MainContent';
-import Footer from '../../components/Footer';
+import AppAppBar from '../../containers/AppAppBar';
+import MainContent from '../../containers/MainContent';
+import Footer from '../../containers/Footer';
 import TemplateFrame from './TemplateFrame';
 
 import getBlogTheme from '../../theme/getBlogTheme';
 
 function Landing() {
     const [mode, setMode] = useState<PaletteMode>('light');
-    const [showCustomTheme, setShowCustomTheme] = useState(true);
     const [currentContent, setCurrentContent] = useState(1);
+    const myRef = useRef<null | HTMLDivElement>(null);
 
     const blogTheme = createTheme(getBlogTheme(mode));
-    const defaultTheme = createTheme({ palette: { mode } });
 
     // This code only runs on the client side, to determine the system color preference    
     useEffect(() => {
@@ -32,35 +31,34 @@ function Landing() {
         }
     }, []);
 
-    const toggleColorMode = () => {
-        const newMode = mode === 'dark' ? 'light' : 'dark';
-        setMode(newMode);
-        localStorage.setItem('themeMode', newMode); // Save the selected mode to localStorage
-    };
-
-    const toggleCustomTheme = () => {
-        setShowCustomTheme((prev) => !prev);
-    };
+    const changeContainer = (nextContent: number) => {
+        setCurrentContent(nextContent);
+        if (myRef.current) {
+            setTimeout(() => { 
+                if (myRef.current)
+                    myRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })                
+            }, 100);
+        }
+    }
 
     return (
         <TemplateFrame
-            toggleCustomTheme={toggleCustomTheme}
-            showCustomTheme={showCustomTheme}
             mode={mode}
-            toggleColorMode={toggleColorMode}
         >
-            <ThemeProvider theme={showCustomTheme ? blogTheme : defaultTheme}>
+            <ThemeProvider theme={blogTheme}>
                 <CssBaseline enableColorScheme />
 
-                <AppAppBar currentContent={currentContent} setCurrentContent={setCurrentContent} />
+                <AppAppBar currentContent={currentContent} setCurrentContent={changeContainer} />
+                <div ref={myRef}></div>
                 <Container
                     maxWidth="lg"
                     component="main"
-                    sx={{ display: 'flex', flexDirection: 'column', my: 16, gap: 4 }}
+                    sx={{ display: 'flex', flexDirection: 'column', my: 10, gap: 1 }}
+                    
                     >
-                    <MainContent currentContent={currentContent} />
-                    {/* <Latest /> */}
+                    <MainContent currentContent={currentContent} setCurrentContent={changeContainer} />                    
                 </Container>
+                
                 <Footer />
             </ThemeProvider>
         </TemplateFrame>

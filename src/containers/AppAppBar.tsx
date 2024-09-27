@@ -11,7 +11,8 @@ import MenuItem from '@mui/material/MenuItem';
 import Drawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import Sitemark from './SitemarkIcon';
+import RouteName from '../components/RouteName';
+import { paramsContainer } from '../types/common';
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   display: 'flex',
@@ -27,12 +28,7 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   padding: '8px 12px',
 }));
 
-interface params {
-  setCurrentContent: React.Dispatch<React.SetStateAction<number>>,
-  currentContent: number
-}
-
-export default function AppAppBar({currentContent, setCurrentContent}: params) {
+export default function AppAppBar({currentContent, setCurrentContent}: paramsContainer) {
   const [open, setOpen] = React.useState(false);
 
   const toggleDrawer = (newOpen: boolean) => () => {
@@ -52,20 +48,17 @@ export default function AppAppBar({currentContent, setCurrentContent}: params) {
       <Container maxWidth="lg">
         <StyledToolbar variant="dense" disableGutters>        
           <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', px: 0 }}>
-            <Sitemark />
+            <RouteName currentContent={currentContent} setCurrentContent={setCurrentContent} />
             <Box sx={{ display: { xs: 'none', md: 'flex' } , ml:6 }}>
               <Button variant="text" sx={{ backgroundColor: currentContent === 1 ? '#383837' : '' }} color="info" size="small" onClick={()=>setCurrentContent(1)}>
                 Home
               </Button>
               <Button variant="text" sx={{ backgroundColor: currentContent === 2 ? '#383837' : '' }} color="info" size="small" onClick={()=>setCurrentContent(2)}>
-                Projects
+                Services
               </Button>
               <Button variant="text" sx={{ backgroundColor: currentContent === 3 ? '#383837' : '' }} color="info" size="small" onClick={()=>setCurrentContent(3)}>
                 Technologies
               </Button>
-              <Button variant="text" sx={{ backgroundColor: currentContent === 4 ? '#383837' : '' }} color="info" size="small" onClick={()=>setCurrentContent(4)}>
-                Experience
-              </Button>              
             </Box>
           </Box>
           <Box sx={{ display: { sm: 'flex', md: 'none' } }}>
@@ -87,9 +80,8 @@ export default function AppAppBar({currentContent, setCurrentContent}: params) {
                 </Box>
                 <Divider sx={{ my: 3 }} />
                 <MenuItem sx={{ backgroundColor: currentContent === 1 ? '#383837' : '' }} onClick={()=>triggerContentMobile(1)}>Home</MenuItem>
-                <MenuItem sx={{ backgroundColor: currentContent === 2 ? '#383837' : '' }} onClick={()=>triggerContentMobile(2)}>Projects</MenuItem>
+                <MenuItem sx={{ backgroundColor: currentContent === 2 ? '#383837' : '' }} onClick={()=>triggerContentMobile(2)}>Services</MenuItem>
                 <MenuItem sx={{ backgroundColor: currentContent === 3 ? '#383837' : '' }} onClick={()=>triggerContentMobile(3)}>Technologies</MenuItem>
-                <MenuItem sx={{ backgroundColor: currentContent === 4 ? '#383837' : '' }} onClick={()=>triggerContentMobile(4)}>Experience</MenuItem>
               </Box>
             </Drawer>
           </Box>
